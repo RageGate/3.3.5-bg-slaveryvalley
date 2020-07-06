@@ -1,0 +1,107 @@
+Hey guys,
+
+this is my official release of the Battleground i made a year ago. 
+(See post Custom Battleground to have a look at the Battleground)
+in the attached file you'll find the following files:
+
+DOWNLOAD Slavery Valley
+
+- Folder Map: this contains the adt and the wdt files
+- Folder Minimap: this are the minimap png's and the map png's (you don't need this folder but i will share it too)
+- Folder Patch: here are all the  seperated files from the Patch for the BG (not in mpq Format)
+- BattlegroundSV.cpp.txt: this is the C++ .cpp file you should implement in your source code
+- BattlegroundSV.h.txt: this is the C++ .h file you schould implement in your soure code
+- BattlegroundSV.sql: this contains 3 npcs some npc text and trinity strings
+- Patch-S.mpq: this is the Patch for your Client. (Contains the same files like the Patch folder)
+
+So let's start implementing the Battleground. I'm sure i will forget some steps so if you have trouble implementing this just post your fix if you got one or tell me so i can tell you what to do. 
+The Battleground is for TrinityCore 3.3.5a and for the english Client because this are all english dbc's.
+
+Step 1:
+
+First make a backup of your Server dbc files, than take all the DBC's files from the Patch/DBFilesClient Folder and copy and past it in your Server DBC's. 
+
+
+Step 2:
+
+Execute the SQL File to your database. The file won't overwrite any existing data.
+
+
+Step 3:
+
+Now starts the C++ part. Get a new blank .cpp and .h file to your Source code. Name it BattlegroundSV.cpp and BattlegroundSV.h. Rebuild and compile your Sourcecode. 
+Now copy paste the complete BattlegroundSV.cpp.txt and BattlegroundSV.h.txt to your new C++ files.
+If you now try to compile you will see, there are some Errors we need to fix.
+
+
+Step 4:
+
+Go to the SharedDefines.h and insert a new Battleground.
+
+line 3341(new enum)
+Code: [Select]
+BATTLEGROUND_SV  = 31,  // Slavery Valley
+
+line 3479(new enum)
+Code: [Select]
+BATTLEGROUND_QUEUE_SV = 11,
+
+
+Step 5:
+
+Go to the BattlegroundMgr.cpp. Here we need to insert som lines.
+
+line 36(new include):
+Code: [Select]
+#include "BattlegroundSV.h"
+
+line 403(new case): 
+Code: [Select]
+case BATTLEGROUND_SV:
+bg = new BattlegroundSV(*(BattlegroundSV*)bg_template);
+break;
+
+line 489(new case):
+Code: [Select]
+case BATTLEGROUND_SV:
+bg = new BattlegroundSV();
+break;
+
+line 757(new case):
+Code: [Select]
+case BATTLEGROUND_SV:
+return BATTLEGROUND_QUEUE_SV;
+
+line 797(new case):
+Code: [Select]
+case BATTLEGROUND_QUEUE_SV:
+return BATTLEGROUND_SV;
+
+Step 6:
+
+need to add some code in the language.h you can place it whereever you want in the trinitystrings sector. i placed it next to the other bg Messages.
+Code: [Select]
+LANG_BG_SV_START_TWO_MINUTES = 1500,
+LANG_BG_SV_START_ONE_MINUTE = 1501,
+LANG_BG_SV_START_HALF_MINUTE = 1502,
+LANG_BG_SV_HAS_BEGUN = 1503,
+
+LANG_BG_SV_TAKEN = 3001,
+LANG_BG_SV_DEFENDED = 3002,
+LANG_BG_SV_ASSAULTED = 3003,
+LANG_BG_SV_ALLY = 3004,
+LANG_BG_SV_HORDE = 3005,
+LANG_BG_SV_MINE = 3006,
+LANG_BG_SV_PRISON = 3007,
+LANG_BG_SV_RESTLESSGRAVEYARD = 3008,
+LANG_BG_SV_BOSS_INC_1MIN = 3009,
+LANG_BG_SV_BOSS_INC_NOW = 3010,
+
+That's it as far as i still knew it. If you compile now there could be some undefined names so check what names are missing but i think this is all what is needed. 
+
+To get it completle working you need to Export the map, mmaps and vmaps of the map.
+Now you can put the Patch-S.mpq into your data folder of your Client and it should work.
+
+If you use it please give some Feedback of the functionality of the bg and if you use it on a Server please tell me which Server you are using it on so i maybe can take a look 
+
+greetings Snoopzz
